@@ -36,9 +36,7 @@ export default class App extends Component {
     }
   };
 
-  // changeFilter = (filter) => {
-  //   this.setState({ filter });
-  // };
+  
 
   getVisibleContacts = () => {
     const { contacts, filter } = this.state;
@@ -63,6 +61,18 @@ export default class App extends Component {
     });
   };
 
+   componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem('contacts'));
+    if (contacts) {
+      this.setState({ contacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
 
 
