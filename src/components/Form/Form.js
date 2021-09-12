@@ -1,41 +1,54 @@
-import React, { Component } from "react";
+import { useState } from 'react';
 import PropTypes from 'prop-types'
 import st from './form.module.css'
 
 
-export default class Form extends Component {
-  state = {
-    name: "",
-    number: "",
-  };
+function Form({ onSubmit }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = (e) => {
+const handleChange = e => {
     const { name, value } = e.target;
-    this.setState({
-      [name]: value,
-    });
+
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  handleSubmit = (e) => {
+const handleSubmit = e => {
     e.preventDefault();
-
-    this.props.onAddContact({ ...this.state });
-
-    this.setState({ name: "", number: "" });
+    onSubmit(name, number);
+    resetInput();
   };
-  render() {
+
+  const  resetInput = () => {
+    setName('');
+    setNumber('');
+  };
+
+
     return (
-      <form className={st.TaskEditor} onSubmit={this.handleSubmit}>
+      <form className={st.TaskEditor} onSubmit={handleSubmit}>
         <label className={st.TaskEditor_label}>
           Name
           <input
             className={st.TaskEditor_input}
             type="text"
             name="name"
-            value={this.state.name}
-            onChange={this.handleChange}
+            value={name}
+            onChange={handleChange}
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="The name can only consist of letters, apostrophes, dashes and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+            placeholder="Ivan Pupkin"
             required
           />
         </label>
@@ -45,10 +58,11 @@ export default class Form extends Component {
             className={st.TaskEditor_input}
             type="text"
             name="number"
-            value={this.state.number}
-            onChange={this.handleChange}
+            value={number}
+            onChange={handleChange}
             pattern="(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})"
             title="The phone number must be 11-12 digits long and can contain numbers, spaces, dashes, pot-bellied brackets and can start with +"
+            placeholder="+3809873458754"
             required
           />
         </label>
@@ -58,10 +72,10 @@ export default class Form extends Component {
       </form>
     );
   }
-}
+
 
 Form.propTypes = {
-  onAddContact: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
+  
+  onSubmit: PropTypes.func.isRequired,
 };
+export default Form;
